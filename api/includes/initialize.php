@@ -36,4 +36,6 @@ require_once(LIB_PATH.DS."hash.php");
 require_once(LIB_PATH.DS."user.php");
 require_once(LIB_PATH.DS."location.php");
 require_once(LIB_PATH.DS."jobs.php");
+require_once(LIB_PATH.DS."keywords.php");
+require_once(LIB_PATH.DS."matches.php");
 ?>

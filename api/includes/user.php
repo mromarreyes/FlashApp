@@ -113,7 +113,7 @@ class User {
 			$arr = array(
 				'success' => false,
 				'user' => $user,
-				'message' => 'Email already exists'
+				'message' => 'Email is already taken. Please try again'
 			);
 
 			return json_encode($arr);
@@ -129,7 +129,7 @@ class User {
 				$arr = array(
 					'success' => true,
 					'userid' => $database->lastInsertedID(),
-					'message' => 'Register successful'
+					'message' => 'Registration successful'
 				);
 
 				return json_encode($arr);
