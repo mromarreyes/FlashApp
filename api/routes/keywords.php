@@ -34,6 +34,12 @@ $app->group('/keywords', function() use($app, $keywordsClass, $session) {
 	    $json = $keywordsClass->getJobKeywords($jobid);
 	    echo $json;
 	});
+
+	$app->get('/keywords/:usertypeid/', function($usertypeid) use($app, $keywordsClass) {
+
+	    $json = $keywordsClass->getKeywords($_SESSION['userid'], $usertypeid);
+	    echo $json;
+	});
 });
 
 ?>

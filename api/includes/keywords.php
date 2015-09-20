@@ -96,6 +96,62 @@ class Keywords {
 			return json_encode($array);
 		}
 	}
+
+	public function getKeywords($userid, $usertypeid) {
+		global $database;
+
+		$sql = "SELECT keyword FROM keywords WHERE userid = :userid";
+		$database->query($sql, array(':userid' => $userid));
+		$keyword = $database->fetch_array();
+
+		$mykeywords = array();
+		foreach($keyword as $id) {
+		    array_push($mykeywords, $id['keyword']);
+		}
+
+		if($usertypeid == 1) {//Look for job
+			//Get all job id's
+			/*$sql = "SELECT keyword FROM keywords WHERE jobid = 5";
+			$database->query($sql, null);
+			$keyword = $database->fetch_array();
+
+			$keywordArray = array();
+			foreach($keyword as $id) {
+			    array_push($keywordArray, $id['keyword']);
+			}
+
+			$array = array('success' => true,
+				'jobs' => array('jobid' => 5, 'keywords' => $keywordArray),
+				'mykeywords' => $mykeywords);
+			return json_encode($array);*/
+
+			$sql = "SELECT j.jobid, j.name, j.phone, k.keyword FROM jobs j, keywords k WHERE j.userid = 1 AND k.jobid = j.jobid";
+			$database->query($sql, null);
+			$data = $database->fetch_array();
+
+			$array = array('success' => true,
+				'mykeywords' => $mykeywords,
+				'jobs' => $data);
+
+			return json_encode($array);
+
+		} else {//Look for users
+			$sql = "SELECT keyword FROM keywords WHERE userid = 3";
+
+			$database->query($sql, null);
+			$keyword = $database->fetch_array();
+
+			$keywordArray = array();
+			foreach($keyword as $id) {
+			    array_push($keywordArray, $id['keyword']);
+			}
+
+			$array = array('success' => true,
+				'users' => array('userid' => 3, 'keywords' => $keywordArray)/*,
+				'mykeywords' => $mykeywords*/);
+			return json_encode($array);
+		}
+	}
 	
 	
 }

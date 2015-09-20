@@ -66,6 +66,13 @@ $app->group('/user', function() use($app, $userClass, $session) {
 	    echo $json;
 	});
 
+	$app->get('/users/', function() use($app, $userClass) {
+
+	    $json = $userClass->getAllUsers();
+
+	    echo $json;
+	});
+
 });
 
 ?>

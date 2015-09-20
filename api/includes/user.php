@@ -241,6 +241,17 @@ class User {
 			return json_encode($array);
 		}
 	}
+
+	public function getAllUsers() {
+		global $database;
+
+		$sql = "SELECT * FROM users";
+		$database->query($sql, null);
+
+		$data = $database->jsonFetch();
+
+		return json_encode($data);
+	}
 	
 }
 

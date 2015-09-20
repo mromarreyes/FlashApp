@@ -44,7 +44,7 @@ class Jobs {
 	public function getJobs($userid) {
 		global $database;
 
-		$sql = "SELECT j.*, a.info FROM jobs j, aboutme a WHERE userid = :userid AND j.aboutid = a.aboutid";
+		$sql = "SELECT * FROM jobs  WHERE userid = :userid";
 		$array = array(':userid' => $userid);
 
 		$database->query($sql, $array);
