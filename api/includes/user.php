@@ -144,6 +144,103 @@ class User {
 		}
 	}
 
+	public function getUserTypes() {
+		global $database;
+
+		$sql = "SELECT usertypeid, usertype FROM usertypes";
+		$database->query($sql, null);
+
+		if($database->rowCount() > 0) {
+			$data = $database->jsonFetch();
+
+			$array = array('success' => true,
+				'usertypes' => $data);
+
+			return json_encode($array);
+		} else {
+			$array = array('success' => false,
+				'message' => 'No usertypes found');
+		}
+	}
+
+	public function aboutMe($userid, $info) {
+		global $database;
+
+		$sql = "INSERT INTO aboutme (info) VALUES (:info)";
+		$array = array(':info' => $info);
+		$database->query($sql, $array);
+		
+
+		if($database->rowCount() > 0) {
+			$id = $database->lastInsertedID();
+
+			$sql = "UPDATE users SET aboutid = :aboutid WHERE userid = :userid";
+			$array = array(':aboutid' => $id,
+				':userid' => $userid);
+			$database->query($sql, $array);
+
+			if($database->rowCount() > 0) {
+				$array = array('success' => true,
+				'message' => 'Added about me successfully');
+
+				return json_encode($array);
+			} else {
+				$array = array('success' => false,
+				'message' => 'Failed to add about me');
+
+				return json_encode($array);
+			}
+		} else {
+			$array = array('success' => false,
+				'message' => 'Failed to add about me');
+
+			return json_encode($array);
+		}
+	}
+
+	public function getAboutMe($userid) {
+		global $database;
+
+		$sql = "SELECT a.* FROM aboutme a, users u WHERE u.userid = :userid AND a.aboutid = u.aboutid";
+		$array = array(':userid' => $userid);
+		$database->query($sql, $array);
+
+		if($database->rowCount() > 0) {
+			$data = $database->jsonFetch();
+
+			$array = array('success' => true,
+				'about' => $data);
+
+			return json_encode($array);
+		} else {
+			$array = array('success' => false,
+				'message' => 'Could not find about info for user');
+
+			return json_encode($array);
+		}
+	}
+
+	public function setUserType($userid, $usertypeid) {
+		global $database;
+
+		$sql = "UPDATE users SET usertypeid = :usertypeid WHERE userid = :userid";
+		$array = array(':userid' => $userid,
+			':usertypeid' => $usertypeid);
+		$database->query($sql, $array);
+
+		if($database->rowCount() > 0) {
+
+			$array = array('success' => true,
+				'message' => 'updated user type successfully');
+
+			return json_encode($array);
+		} else {
+			$array = array('success' => false,
+				'message' => 'Failed to update usertype');
+
+			return json_encode($array);
+		}
+	}
 	
 }
 

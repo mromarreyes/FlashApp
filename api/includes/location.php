@@ -1,37 +1,66 @@
 <?php
- 
-// Create connection
-$con=mysqli_connect("localhost","omarreye_hack","flashdisrupt","omarreye_hackathon");
- 
-// Check connection
-if (mysqli_connect_errno())
-{
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
- 
-// This SQL statement selects ALL from the table 'Locations'
-$sql = "SELECT u.userid, l.* FROM locations l , users u WHERE l.locationid = u.locationid";
- 
-// Check if there are results
-if ($result = mysqli_query($con, $sql))
-{
-	// If so, then create a results array and a temporary one
-	// to hold the data
-	$resultArray = array();
-	$tempArray = array();
- 
-	// Loop through each row in the result set
-	while($row = $result->fetch_object())
-	{
-		// Add each row into our results array
-		$tempArray = $row;
-	    array_push($resultArray, $tempArray);
+
+require_once(LIB_PATH.DS.'database.php');
+
+class Location {
+
+	public function getLocation($locationid) {
+		global $database;
+
+		$sql = "SELECT * FROM locations WHERE locationid = :locationid";
+		$array = array(':locationid' => $locationid);
+
+		$database->query($sql, $array);
+
+		if($database->rowCount() > 0) {
+			$data = $database->jsonFetch();
+
+			$array = array('success' => true,
+				'location' => $data);
+
+			return json_encode($array);
+		} else {
+			$array = array('success' => false,
+				'message' => 'location not found');
+
+			return json_encode($array); 
+		}
 	}
- 
-	// Finally, encode the array to JSON and output the results
-	echo json_encode($resultArray);
+
+	public function addLocation($userid, $address, $latitude, $longitude) {
+		global $database;
+
+		$sql = "INSERT INTO locations (address, latitude, longitude) VALUES(:address, :latitude, :longitude)";
+		$array = array(':address' => $address,
+			':latitude' => $latitude,
+			':longitude' => $longitude);
+
+		$database->query($sql, $array);
+
+		if($database->rowCount() > 0) {
+			$id = $database->lastInsertedID();
+
+			$sql = "UPDATE users SET locationid = :locationid WHERE userid = :userid";
+			$array = array(':locationid' => $id,
+				':userid' => $userid);
+
+			$database->query($sql, $array);
+
+			if($database->rowCount() > 0) {
+				$array = array('success' => true,
+					'message' => 'Added location successfully');
+				return json_encode($array);
+			} else {
+				$array = array('success' => false,
+					'message' => 'Failed to add location');
+				return json_encode($array);
+			}
+		}
+	}
+
+	
 }
- 
-// Close connections
-mysqli_close($con);
+
+$location = new Location();
+
 ?>

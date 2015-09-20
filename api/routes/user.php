@@ -34,7 +34,37 @@ $app->group('/user', function() use($app, $userClass, $session) {
 	    echo $json;
 	});
 
-	
+	$app->get('/usertypes/', function() use($app, $userClass) {
+
+	    $json = $userClass->getUserTypes();
+	    echo $json;
+	});
+
+	$app->post('/aboutMe/', function() use($app, $userClass) {
+
+		//$userid = $app->request->post('userid');
+		$info = $app->request->post('info');
+
+	    $json = $userClass->aboutMe($_SESSION['userid'], $info);
+
+	    echo $json;
+	});
+
+	$app->get('/aboutMe/', function() use($app, $userClass) {
+
+	    $json = $userClass->getAboutMe($_SESSION['userid']);
+
+	    echo $json;
+	});
+
+	$app->post('/setUserType/', function() use($app, $userClass) {
+
+		$usertypeid = $app->request->post('usertypeid');
+
+	    $json = $userClass->setUserType($_SESSION['userid'], $usertypeid);
+
+	    echo $json;
+	});
 
 });
 
